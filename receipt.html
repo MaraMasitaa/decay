@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            max-width: 150px;
+        }
+
+        .note {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .receipt-details {
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .receipt-details p {
+            margin: 5px 0;
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .order-summary {
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .order-item img {
+            max-width: 60px;
+            border-radius: 5px;
+        }
+
+        .order-item h3 {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .order-item p {
+            margin: 0;
+            color: #666;
+        }
+
+        .totals p {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .totals h2 {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.5rem;
+            color: #333;
+            margin-top: 15px;
+        }
+
+        .qr-code-container {
+            margin-top: 20px;
+            display: none; /* Hide the QR code container by default */
+        }
+
+        .qr-code-container img {
+            max-width: 150px;
+            border-radius: 10px;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="back-link"  style="text-align: left; color: #000; text-decoration: none;">
+            <a href="checkout.html" >&lt; Back</a>
+        </div>
+        <header>
+            <img src="./img/logodecay.JPG" alt="Logo" class="logo">
+            <p id="payment-note" class="note"></p>
+        </header>
+      
+        <h2>Order Receipt</h2>
+
+        <div class="receipt-details">
+            <p><strong>Order Date:</strong> <span id="order-date"></span></p>
+            <p><strong>Name:</strong> <span id="customer-name"></span></p>
+            <p><strong>Delivery Address:</strong> <span id="delivery-address"></span></p>
+            <p><strong>Phone Number:</strong> <span id="phone-number"></span></p>
+            <p><strong>Payment Method:</strong> <span id="payment-method"></span></p>
+        </div>
+
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <div id="order-items"></div>
+        </div>
+
+        <div class="totals">
+            <p id="subtotal">Subtotal: $0.00</p>
+            <p id="shipping">Shipping: $2.00</p>
+            <h2 id="total">Total: $0.00</h2>
+        </div>
+
+        <div class="qr-code-container" id="qr-code-container">
+            <p>Please take a screenshot and send it to our Instagram
+                <a href="https://www.instagram.com/direct/t/17843113272279213?hl=en">decayofficial_</a>
+            </p>
+            <img src="./img/ABA.PNG" alt="QR Code">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Retrieve order details from localStorage
+            const orderDetails = JSON.parse(localStorage.getItem('orderDetails')) || {};
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+
+            // Display receipt details
+            document.getElementById('order-date').textContent = new Date().toLocaleDateString();
+            document.getElementById('customer-name').textContent = orderDetails.fullName || 'John Doe';
+            document.getElementById('delivery-address').textContent = orderDetails.deliveryAddress || '1234 Example St, City, Country';
+            document.getElementById('phone-number').textContent = orderDetails.phoneNumber || '0123456789';
+            document.getElementById('payment-method').textContent = orderDetails.paymentMethod || 'Cash on Delivery';
+
+            const paymentNote = document.getElementById('payment-note');
+            const qrCodeContainer = document.getElementById('qr-code-container');
+
+            // Display QR code and note based on payment method
+            if (orderDetails.paymentMethod === 'ABA') {
+                qrCodeContainer.style.display = 'block';
+                paymentNote.innerHTML = " Please take a screenshot of the receipt and ABA's payment send it to our Instagram  <a href='https://www.instagram.com/direct/t/17843113272279213?hl=en' target='_blank'>decayofficial_</a>.";
+            } else if (orderDetails.paymentMethod === 'Cash') {
+                qrCodeContainer.style.display = 'none';
+                paymentNote.innerHTML = " Please take a screenshot of the receipt and send it to our Instagram  <a href='https://www.instagram.com/direct/t/17843113272279213?hl=en' target='_blank'>decayofficial_</a>.";
+
+            }
+
+            // Display order items
+            const orderItemsContainer = document.getElementById('order-items');
+            let totalPrice = 0;
+
+            cartItems.forEach(item => {
+                const orderItem = document.createElement('div');
+                orderItem.className = 'order-item';
+
+                const itemImage = document.createElement('img');
+                itemImage.src = item.image;
+                itemImage.alt = item.name;
+
+                const itemDetails = document.createElement('div');
+                const itemName = document.createElement('h3');
+                itemName.textContent = item.name;
+                const itemSize = document.createElement('p');
+                itemSize.textContent = `Size: ${item.size}`;
+                const itemQuantity = document.createElement('p');
+                itemQuantity.textContent = `Quantity: ${item.quantity}`;
+
+                itemDetails.appendChild(itemName);
+                itemDetails.appendChild(itemSize);
+                itemDetails.appendChild(itemQuantity);
+
+                const itemPrice = document.createElement('p');
+                itemPrice.textContent = `$${(item.price * item.quantity).toFixed(2)}`;
+
+                orderItem.appendChild(itemImage);
+                orderItem.appendChild(itemDetails);
+                orderItem.appendChild(itemPrice);
+
+                orderItemsContainer.appendChild(orderItem);
+
+                totalPrice += item.price * item.quantity;
+            });
+
+            const shippingFee = 2.00;
+            const subtotal = totalPrice;
+            const totalWithShipping = subtotal + shippingFee;
+
+            document.getElementById('subtotal').textContent = `Subtotal: $${subtotal.toFixed(2)}`;
+            document.getElementById('shipping').textContent = `Shipping: $${shippingFee.toFixed(2)}`;
+            document.getElementById('total').textContent = `Total: $${totalWithShipping.toFixed(2)}`;
+        });
+    </script>
+</body>
+
+</html>

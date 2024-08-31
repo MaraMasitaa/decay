@@ -6,6 +6,11 @@
 /*
  *  Owl Carousel - Core
  */
+ .owl-carousel .owl-nav .owl-next {
+  background-image: none; /* Removes the image */
+  /* other styles */
+}
+
 .owl-carousel {
   display: none;
   width: 100%;
@@ -142,7 +147,7 @@
   top: 50%;
   margin-left: -40px;
   margin-top: -40px;
-  background: url("owl.video.play.png") no-repeat;
+ 
   cursor: pointer;
   z-index: 1;
   -webkit-backface-visibility: hidden;

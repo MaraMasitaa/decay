@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .logo {
+            max-width: 210px;
+        }
+
+        .checkout-form {
+            width: 100%;
+            max-width: 60%;
+            margin-bottom: 30px;
+        }
+
+        .contact-section,
+        .delivery-section {
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .input-error {
+            border-color: #ff4d4d;
+            background-color: #ffe6e6;
+        }
+
+        .input-valid {
+            border-color: #28a745;
+            background-color: #e6ffe6;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: -10px;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .order-summary {
+            width: 100%;
+            max-width: 35%;
+            background-color: #f7f7f7;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 10px;
+        }
+
+        .complete-order-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #C3B091 0%, #5C4033 100%);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .complete-order-btn.invalid {
+            background-color: #ff4d4d;
+            /* Red color for invalid submission */
+        }
+
+        .complete-order-btn.valid {
+            background-color: #28a745;
+            /* Green color for valid submission */
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .order-item img {
+            max-width: 80px;
+            border-radius: 5px;
+        }
+
+        .order-item h3 {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .order-item p {
+            margin: 0;
+            color: #666;
+        }
+
+        .totals p {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .totals h2 {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.8rem;
+            color: #333;
+            margin-top: 15px;
+        }
+
+        .complete-order-btn:hover {
+            background-color: #e6006f;
+        }
+
+        /* QR Code Style */
+        #qr-code {
+            display: none;
+            /* Hidden by default */
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #qr-code img {
+            max-width: 200px;
+            border-radius: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .checkout-form,
+            .order-summary {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <img src="./img/logodecay.JPG" alt="Logo" class="logo">
+        </header>
+
+        <div class="checkout-form">
+            <div class="contact-section">
+                <h2>Contact</h2>
+                <input type="text" placeholder="Enter your phone number" id="phone-number">
+                <label class="checkbox-container">
+                    <input type="checkbox" checked>
+                    <span class="checkmark"></span>
+                   make sure your number is correct?
+                </label>
+            </div>
+
+            <div class="delivery-section">
+                <h2>Delivery</h2>
+                <input type="text" placeholder="Full Name" id="full-name">
+                <input type="text" placeholder="Instagram @" id="instagram">
+                <input type="text" placeholder="Delivery Address" id="delivery-address">
+
+                <h2>Payment method:</h2>
+                <select id="payment-method">
+                    <option value="Cash">Cash on delivery</option>
+                    <option value="ABA">ABA</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="order-summary">
+            <!-- Placeholder for order items, these will be added dynamically by JavaScript -->
+            <div id="order-items"></div>
+            <div class="totals">
+                <p id="subtotal">Subtotal: $0.00</p>
+                <p id="shipping">Shipping: $2.00</p>
+                <h2 id="total">Total: $0.00</h2>
+            </div>
+        </div>
+    </div>
+
+    <button class="complete-order-btn">Complete order</button>
+
+    <!-- QR Code Container -->
+    <div id="qr-code">
+        <p>Please take a screenshot and send it to our Instagram
+            <a href="https://www.instagram.com/direct/t/17843113272279213?hl=en">decayofficial_</a>
+        </p>
+        <img src="./img/ABA.PNG" alt="QR Code">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+
+            function displayCartItems() {
+                const orderItemsContainer = document.getElementById('order-items');
+                let totalPrice = 0;
+
+                // Clear previous order items
+                orderItemsContainer.innerHTML = '';
+
+                if (cartItems.length === 0) {
+                    orderItemsContainer.innerHTML = '<p>No items in your cart.</p>';
+                    document.getElementById('subtotal').textContent = 'Subtotal: $0.00';
+                    document.getElementById('shipping').textContent = 'Shipping: $2.00';
+                    document.getElementById('total').textContent = 'Total: $2.00';
+                    return;
+                }
+
+                cartItems.forEach(item => {
+                    const orderItem = document.createElement('div');
+                    orderItem.className = 'order-item';
+
+                    const itemImage = document.createElement('img');
+                    itemImage.src = item.image;
+                    itemImage.alt = item.name;
+
+                    const itemDetails = document.createElement('div');
+                    const itemName = document.createElement('h3');
+                    itemName.textContent = item.name;
+                    const itemSize = document.createElement('p');
+                    itemSize.textContent = `Size: ${item.size}`;
+                    const itemQuantity = document.createElement('p');
+                    itemQuantity.textContent = `Quantity: ${item.quantity}`;
+
+                    itemDetails.appendChild(itemName);
+                    itemDetails.appendChild(itemSize);
+                    itemDetails.appendChild(itemQuantity);
+
+                    const itemPrice = document.createElement('p');
+                    itemPrice.textContent = `$${(item.price * item.quantity).toFixed(2)}`;
+
+                    orderItem.appendChild(itemImage);
+                    orderItem.appendChild(itemDetails);
+                    orderItem.appendChild(itemPrice);
+
+                    orderItemsContainer.appendChild(orderItem);
+
+                    totalPrice += item.price * item.quantity;
+                });
+
+                const shippingFee = 2.00;
+                const subtotal = totalPrice;
+                const totalWithShipping = subtotal + shippingFee;
+
+                document.getElementById('subtotal').textContent = `Subtotal: $${subtotal.toFixed(2)}`;
+                document.getElementById('shipping').textContent = `Shipping: $${shippingFee.toFixed(2)}`;
+                document.getElementById('total').textContent = `Total: $${totalWithShipping.toFixed(2)}`;
+            }
+
+            displayCartItems();
+        });
+
+        document.querySelector('.complete-order-btn').addEventListener('click', function () {
+            const phoneNumber = document.getElementById('phone-number').value;
+            const fullName = document.getElementById('full-name').value;
+            const instagram = document.getElementById('instagram').value;
+            const deliveryAddress = document.getElementById('delivery-address').value;
+            const paymentMethod = document.getElementById('payment-method').value;
+
+            // Validation
+            let isValid = true;
+            const inputs = [document.getElementById('phone-number'), document.getElementById('full-name'), document.getElementById('instagram'), document.getElementById('delivery-address')];
+
+            inputs.forEach(input => {
+                if (input.value.trim() === '') {
+                    input.classList.add('input-error');
+                    input.classList.remove('input-valid');
+                    isValid = false;
+                } else {
+                    input.classList.remove('input-error');
+                    input.classList.add('input-valid');
+                }
+            });
+
+            if (!isValid) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            // Store order details in localStorage
+            const orderDetails = {
+                phoneNumber,
+                fullName,
+                instagram,
+                deliveryAddress,
+                paymentMethod,
+                total: document.getElementById('total').textContent
+            };
+
+            localStorage.setItem('orderDetails', JSON.stringify(orderDetails));
+
+            const qrCodeContainer = document.getElementById('qr-code');
+
+            // Show the QR code
+            if (paymentMethod === 'ABA') {
+                qrCodeContainer.style.display = 'block';
+            } else {
+                qrCodeContainer.style.display = 'none';
+            }
+
+            // Redirect to receipt.html after a short delay (e.g., 2 seconds)
+            setTimeout(function () {
+                window.location.href = 'receipt.html';
+            }, 2000); // Adjust the delay time as needed
+        });
+    </script>
+</body>
+
+</html>
